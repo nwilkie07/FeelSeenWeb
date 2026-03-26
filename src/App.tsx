@@ -11,6 +11,7 @@ import AuthCallback from './pages/AuthCallback';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
 import Terms from './pages/Terms';
+import Landing from './pages/Landing';
 import { loadSavedFirebaseConfig } from './database/firebase';
 import { syncManager } from './database/sync-manager';
 import { initWeatherDefaults, syncWeather } from './database/weather-sync';
@@ -45,7 +46,8 @@ function App() {
           {/* Main content area */}
           <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/app" element={<Home />} />
               <Route path="/create" element={<CreateSymptoms />} />
               <Route path="/history" element={<History />} />
               <Route path="/trends" element={<Trends />} />

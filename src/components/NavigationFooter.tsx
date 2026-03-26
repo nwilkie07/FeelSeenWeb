@@ -13,7 +13,7 @@ import {
 } from 'react-icons/io5';
 
 const tabs = [
-  { path: '/', label: 'Home', icon: IoHomeOutline, activeIcon: IoHome },
+  { path: '/app', label: 'Home', icon: IoHomeOutline, activeIcon: IoHome },
   { path: '/create', label: 'Track', icon: IoAddCircleOutline, activeIcon: IoAdd },
   { path: '/history', label: 'History', icon: IoTimeOutline, activeIcon: IoTime },
   { path: '/trends', label: 'Trends', icon: IoAnalyticsOutline, activeIcon: IoAnalytics },
@@ -28,6 +28,9 @@ export default function NavigationFooter() {
   if (location.pathname === '/health-integrations') return null;
   if (location.pathname.startsWith('/auth/')) return null;
   if (location.pathname === '/privacy') return null;
+  if (location.pathname === '/terms') return null;
+  if (location.pathname === '/contact') return null;
+  if (location.pathname === '/') return null;
   if (location.pathname === '/contact') return null;
 
   return (
