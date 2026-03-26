@@ -227,7 +227,7 @@ export default function WeatherModal({ isOpen, onClose, onRefresh }: WeatherModa
                 </button>
               </div>
               <p style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>
-                If blank, uses IP-based geolocation (Canada only)
+                If blank, uses IP-based geolocation
               </p>
             </div>
 

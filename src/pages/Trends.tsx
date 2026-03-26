@@ -143,12 +143,15 @@ function correlationLabel(r: number): string {
 }
 
 function computeTrend(data: number[]): { label: string; color: string } | null {
-  const valid = data.filter((v) => v > 0);
-  if (valid.length < 2) return null;
-  const mid = Math.ceil(valid.length / 2);
-  const a1 = valid.slice(0, mid).reduce((a, b) => a + b, 0) / mid;
-  const a2 = valid.slice(mid).reduce((a, b) => a + b, 0) / (valid.length - mid);
-  if (a1 === 0) return null;
+  // Include zeros — they are meaningful for metrics like steps, count, etc.
+  if (data.length < 2) return null;
+  const mid = Math.ceil(data.length / 2);
+  const a1 = data.slice(0, mid).reduce((a, b) => a + b, 0) / mid;
+  const a2 = data.slice(mid).reduce((a, b) => a + b, 0) / (data.length - mid);
+  // If both halves average to 0, no trend to show
+  if (a1 === 0 && a2 === 0) return null;
+  // If first half is 0 but second isn't, it's an increase from nothing
+  if (a1 === 0) return { label: 'New', color: '#4caf50' };
   const pct = ((a2 - a1) / a1) * 100;
   if (Math.abs(pct) < 5) return { label: 'Stable', color: '#888' };
   return pct > 0
@@ -220,8 +223,8 @@ export default function Trends() {
 
   useEffect(() => { loadEntries(); }, [loadEntries]);
 
-  const activeFields  = fields.filter((f) => enabledFields.has(f.id!));
-  const numericFields = activeFields.filter(isNumericField);
+  const activeFields  = useMemo(() => fields.filter((f) => enabledFields.has(f.id!)), [fields, enabledFields]);
+  const numericFields = useMemo(() => activeFields.filter(isNumericField), [activeFields]);
 
   const { start, end } = getDateRange(timeRange, customStartDate, customEndDate);
   const buckets         = getDatesInRange(start, end, timeRange);
@@ -236,8 +239,24 @@ export default function Trends() {
     return d.getDate() === 1 ? format(d, 'MMM d') : format(d, 'd');
   };
 
+  // Memoized per-field chart data and stats to avoid recomputing on every render
+  const fieldChartCache = useMemo(() => {
+    const cache = new Map<number, { chartData: ReturnType<typeof _buildFieldChartData>; stats: FieldStats }>();
+    for (const field of activeFields) {
+      const chartData = _buildFieldChartData(field);
+      const stats     = _computeStats(field, chartData);
+      cache.set(field.id!, { chartData, stats });
+    }
+    return cache;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entries, activeFields, buckets, useMonthly]);
+
+  function getFieldChart(field: SymptomField) {
+    return fieldChartCache.get(field.id!) ?? { chartData: [], stats: { type: 'count' as const, totalEntries: 0, daysLogged: 0, avgPerDay: '0', peak: 0, trend: null } };
+  }
+
   // Per-field chart data (bar / line / area)
-  function buildFieldChartData(field: SymptomField) {
+  function _buildFieldChartData(field: SymptomField) {
     const fe  = entries.filter((e) => e.fieldId === field.id);
     const num = isNumericField(field);
     return buckets.map((bucket) => {
@@ -258,8 +277,8 @@ export default function Trends() {
     });
   }
 
-  function computeStats(field: SymptomField): FieldStats {
-    const data       = buildFieldChartData(field);
+  function _computeStats(field: SymptomField, data?: ReturnType<typeof _buildFieldChartData>): FieldStats {
+    if (!data) data = _buildFieldChartData(field);
     const totalCount = data.reduce((a, b) => a + b.count, 0);
     const daysLogged = data.filter((d) => d.count > 0).length;
     if (isNumericField(field)) {
@@ -286,7 +305,6 @@ export default function Trends() {
       }
     }
     return row;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [entries, activeFields, buckets, useMonthly]);
 
   // ── Heatmap data ────────────────────────────────────────────────────────────
@@ -457,8 +475,8 @@ export default function Trends() {
                 <FieldCard
                   key={field.id}
                   field={field}
-                  chartData={buildFieldChartData(field)}
-                  stats={computeStats(field)}
+                  chartData={getFieldChart(field).chartData}
+                  stats={getFieldChart(field).stats}
                   chartType={chartType}
                   isNumeric={isNumericField(field)}
                 />
@@ -669,17 +687,26 @@ function HeatmapSection({ activeFields, entries, calendar, tooltip, setTooltip }
         const avgMap    = new Map<string, number>();
         const numeric   = isNumericField(field);
 
+        // Track sum and count for correct average calculation
+        const sumMap  = new Map<string, number>();
+        const numMap  = new Map<string, number>();
+
         fe.forEach((e) => {
           const d = e.loggedAt.slice(0, 10);
           countMap.set(d, (countMap.get(d) || 0) + 1);
           if (numeric) {
             const v = getNumericValue(e.value, field);
             if (v != null) {
-              const prev = avgMap.get(d);
-              avgMap.set(d, prev == null ? v : (prev + v) / 2);
+              sumMap.set(d, (sumMap.get(d) || 0) + v);
+              numMap.set(d, (numMap.get(d) || 0) + 1);
             }
           }
         });
+
+        // Compute correct averages from sum/count
+        for (const [d, sum] of sumMap) {
+          avgMap.set(d, sum / numMap.get(d)!);
+        }
 
         const maxCount  = Math.max(1, ...Array.from(countMap.values()));
         const hasAny    = Array.from(countMap.values()).some((c) => c > 0);

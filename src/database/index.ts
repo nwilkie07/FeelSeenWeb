@@ -30,24 +30,13 @@ export const db = new FeelSeenDB();
 
 // ---- SymptomFields ----
 
-export async function getSymptomFields(): Promise<SymptomField[]> {
-  return db.symptomFields.orderBy('createdAt').reverse().toArray();
-}
-
 export async function getUserSymptomFields(): Promise<SymptomField[]> {
-  return db.symptomFields
-    .filter((f) => !f.isSystem)
-    .reverse()
-    .sortBy('createdAt');
+  const all = await db.symptomFields.orderBy('createdAt').reverse().toArray();
+  return all.filter((f) => !f.isSystem);
 }
 
 export async function getAllSymptomFields(): Promise<SymptomField[]> {
   return db.symptomFields.orderBy('createdAt').reverse().toArray();
-}
-
-export async function getSystemFields(): Promise<SymptomField[]> {
-  const all = await db.symptomFields.orderBy('createdAt').reverse().toArray();
-  return all.filter(f => f.isSystem === true);
 }
 
 export async function createSymptomField(
@@ -117,14 +106,30 @@ export async function getFieldEntriesForDate(
 }
 
 export async function getAllEntriesForDate(date: string): Promise<Map<number, FieldEntry[]>> {
-  const all = await db.fieldEntries.toArray();
+  // Use loggedAt index to narrow the scan instead of loading entire table
+  const dayStart = date + 'T00:00:00.000Z';
+  const dayEnd   = date + 'T23:59:59.999Z';
+  const filtered = await db.fieldEntries
+    .where('loggedAt')
+    .between(dayStart, dayEnd, true, true)
+    .toArray();
+  // Also catch entries stored without the 'Z' suffix or in local time
+  // by falling back to string prefix comparison on the narrowed set
   const map = new Map<number, FieldEntry[]>();
-  for (const entry of all) {
-    const entryDate = entry.loggedAt.slice(0, 10);
-    if (entryDate === date) {
-      const existing = map.get(entry.fieldId) || [];
-      existing.push(entry);
-      map.set(entry.fieldId, existing);
+  for (const entry of filtered) {
+    const existing = map.get(entry.fieldId) || [];
+    existing.push(entry);
+    map.set(entry.fieldId, existing);
+  }
+  // Fallback: if index-based query returns nothing, try prefix match (handles non-UTC formats)
+  if (map.size === 0) {
+    const all = await db.fieldEntries.toArray();
+    for (const entry of all) {
+      if (entry.loggedAt.slice(0, 10) === date) {
+        const existing = map.get(entry.fieldId) || [];
+        existing.push(entry);
+        map.set(entry.fieldId, existing);
+      }
     }
   }
   return map;
@@ -142,11 +147,22 @@ export async function getEntriesInRange(
   startDate: string,
   endDate: string
 ): Promise<FieldEntry[]> {
-  const all = await db.fieldEntries.orderBy('loggedAt').toArray();
-  return all.filter((e) => {
-    const d = e.loggedAt.slice(0, 10);
-    return d >= startDate && d <= endDate;
-  });
+  // Use loggedAt index for range query instead of full table scan
+  const rangeStart = startDate + 'T00:00:00.000Z';
+  const rangeEnd   = endDate   + 'T23:59:59.999Z';
+  const results = await db.fieldEntries
+    .where('loggedAt')
+    .between(rangeStart, rangeEnd, true, true)
+    .sortBy('loggedAt');
+  // Fallback for entries stored in non-UTC format
+  if (results.length === 0) {
+    const all = await db.fieldEntries.orderBy('loggedAt').toArray();
+    return all.filter((e) => {
+      const d = e.loggedAt.slice(0, 10);
+      return d >= startDate && d <= endDate;
+    });
+  }
+  return results;
 }
 
 // ---- Forms ----
@@ -216,7 +232,7 @@ export async function setAppSetting(key: string, value: string): Promise<void> {
 // ---- Export ----
 
 export async function exportAsCSV(): Promise<string> {
-  const fields = await getSymptomFields();
+  const fields = await getAllSymptomFields();
   const entries = await getAllEntries();
   const fieldMap = new Map(fields.map((f) => [f.id!, f]));
 
@@ -236,7 +252,7 @@ export async function exportAsCSV(): Promise<string> {
 }
 
 // Convert an ISO datetime string (web) → "YYYY-MM-DD HH:MM:SS" local time (mobile)
-function toMobileLoggedAt(isoString: string): string {
+export function toMobileLoggedAt(isoString: string): string {
   const d = new Date(isoString);
   const pad = (n: number) => String(n).padStart(2, '0');
   return (
@@ -434,23 +450,41 @@ function normaliseMobileBackup(data: Record<string, any>): {
 }
 
 export async function importFromJSON(json: string): Promise<void> {
-  const data = JSON.parse(json);
+  let data: unknown;
+  try {
+    data = JSON.parse(json);
+  } catch {
+    throw new Error('Invalid backup file: not valid JSON');
+  }
 
   if (typeof data !== 'object' || data === null) {
     throw new Error('Invalid backup file: not a JSON object');
   }
 
+  const obj = data as Record<string, unknown>;
+
   // Detect format: mobile backup has a "tables" key; web backup has "fields"
-  const isMobileFormat = 'tables' in data && !('fields' in data);
+  const isMobileFormat = 'tables' in obj && !('fields' in obj);
+
+  // Validate expected top-level shape
+  if (!isMobileFormat) {
+    if (!Array.isArray(obj.fields)) {
+      throw new Error('Invalid backup file: missing "fields" array');
+    }
+  } else {
+    if (typeof obj.tables !== 'object' || obj.tables === null) {
+      throw new Error('Invalid backup file: missing "tables" object');
+    }
+  }
 
   const normalised = isMobileFormat
-    ? normaliseMobileBackup(data)
+    ? normaliseMobileBackup(obj as Record<string, any>)
     : {
-        fields:     data.fields     ?? [],
-        entries:    data.entries    ?? [],
-        forms:      data.forms      ?? [],
-        formFields: data.formFields ?? [],
-        settings:   data.settings   ?? [],
+        fields:     (obj as any).fields     ?? [],
+        entries:    (obj as any).entries    ?? [],
+        forms:      (obj as any).forms      ?? [],
+        formFields: (obj as any).formFields ?? [],
+        settings:   (obj as any).settings   ?? [],
       };
 
   const tables = [db.symptomFields, db.fieldEntries, db.forms, db.formFields, db.appSettings];

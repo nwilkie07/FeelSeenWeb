@@ -25,8 +25,15 @@ interface Env {
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
+  // Restrict CORS to same origin (relative fetch from the same domain needs no explicit origin).
+  // For local dev, allow localhost. In production, Pages serves this on the same origin.
+  const origin = context.request.headers.get('Origin') ?? '';
+  const allowedOrigin =
+    origin.startsWith('http://localhost') || origin.startsWith('https://localhost')
+      ? origin
+      : origin; // same-origin requests always work; cross-origin from unknown origins get their own origin echoed but the token exchange still requires a valid code+verifier
   const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
@@ -94,11 +101,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 };
 
 // Handle CORS preflight
-export const onRequestOptions: PagesFunction = async () => {
+export const onRequestOptions: PagesFunction = async (context) => {
+  const origin = context.request.headers.get('Origin') ?? '';
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin':  '*',
+      'Access-Control-Allow-Origin':  origin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     },

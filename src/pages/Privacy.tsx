@@ -185,8 +185,8 @@ export default function Privacy() {
                   <Td>Cloud backup &amp; restore</Td>
                 </tr>
                 <tr style={{ background: '#fafafa' }}>
-                  <Td>Environment Canada API</Td>
-                  <Td>Location (city-level)</Td>
+                  <Td>Open-Meteo API</Td>
+                  <Td>Location (latitude/longitude)</Td>
                   <Td>Weather correlation</Td>
                 </tr>
               </tbody>

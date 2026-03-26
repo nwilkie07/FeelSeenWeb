@@ -213,9 +213,9 @@ export async function handleOAuthCallback(
 
   // Verify state to prevent CSRF
   const savedState = sessionStorage.getItem(OAUTH_STATE_KEY);
-  if (savedState && state && savedState !== state) {
-    throw new Error('OAuth state mismatch — possible CSRF attack');
-  }
+  if (!savedState) throw new Error('OAuth state missing from session — please try signing in again');
+  if (!state)      throw new Error('OAuth state missing from callback URL — possible CSRF attack');
+  if (savedState !== state) throw new Error('OAuth state mismatch — possible CSRF attack');
 
   const verifier = sessionStorage.getItem(PKCE_VERIFIER_KEY);
   if (!verifier) throw new Error('PKCE verifier missing — please try signing in again');

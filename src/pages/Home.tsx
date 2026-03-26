@@ -418,7 +418,7 @@ interface FormCardProps {
   onRefresh: () => void;
 }
 
-function FormCard({ form, selectedDate, entriesMap, onLogField, onViewEntries }: FormCardProps) {
+function FormCard({ form, selectedDate, entriesMap, onLogField, onViewEntries, onRefresh }: FormCardProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [logField, setLogField] = useState<SymptomField | null>(null);
   const color = form.color || '#a5a5df';
@@ -553,7 +553,7 @@ function FormCard({ form, selectedDate, entriesMap, onLogField, onViewEntries }:
         onClose={() => setLogField(null)}
         field={logField}
         selectedDate={selectedDate}
-        onSaved={() => {}}
+        onSaved={onRefresh}
       />
     </div>
   );

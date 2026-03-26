@@ -153,12 +153,11 @@ export default function Terms() {
 
         <Section title="7. Third-Party Integrations">
           <p>
-            FeelSeen integrates with optional third-party services including Google Fit, Fitbit,
-            Garmin Connect, Firebase, and Environment Canada. By connecting these services, you
-            agree to their respective terms of service and privacy policies.
+            FeelSeen integrates with optional third-party services including Firebase and Open-Meteo. 
+            By connecting these services, you agree to their respective terms of service and privacy policies.
           </p>
           <p style={{ marginTop: '10px' }}>
-            We are not responsible for the availability, accuracy, or actions of any third-party
+            We are not responsible for the availability, accuracy, or actions of any third-party 
             service. Third-party integrations may be modified or discontinued at any time.
           </p>
           <div style={{ overflowX: 'auto', marginTop: '14px' }}>
@@ -177,23 +176,8 @@ export default function Terms() {
                   <Td>Yes</Td>
                 </tr>
                 <tr style={{ background: '#fafafa' }}>
-                  <Td>Google Fit</Td>
-                  <Td>Health data import</Td>
-                  <Td>Yes</Td>
-                </tr>
-                <tr>
-                  <Td>Fitbit</Td>
-                  <Td>Health data import</Td>
-                  <Td>Yes</Td>
-                </tr>
-                <tr style={{ background: '#fafafa' }}>
-                  <Td>Garmin Connect</Td>
-                  <Td>Health data import</Td>
-                  <Td>Yes</Td>
-                </tr>
-                <tr>
-                  <Td>Environment Canada API</Td>
-                  <Td>Weather data (Canada only)</Td>
+                  <Td>Open-Meteo API</Td>
+                  <Td>Weather data (global)</Td>
                   <Td>Yes</Td>
                 </tr>
               </tbody>

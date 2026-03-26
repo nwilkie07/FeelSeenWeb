@@ -31,7 +31,6 @@ export default function NavigationFooter() {
   if (location.pathname === '/terms') return null;
   if (location.pathname === '/contact') return null;
   if (location.pathname === '/') return null;
-  if (location.pathname === '/contact') return null;
 
   return (
     <nav

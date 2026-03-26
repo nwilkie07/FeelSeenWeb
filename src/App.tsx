@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { FieldsProvider } from './context/FieldsContext';
+// FieldsContext removed — was unused (no component calls useFields())
 import NavigationFooter from './components/NavigationFooter';
 import Home from './pages/Home';
 import CreateSymptoms from './pages/CreateSymptoms';
@@ -33,7 +33,6 @@ function App() {
 
   return (
     <BrowserRouter>
-      <FieldsProvider>
         <div
           style={{
             display: 'flex',
@@ -64,7 +63,6 @@ function App() {
           {/* Bottom navigation — hidden on /auth/callback */}
           <NavigationFooter />
         </div>
-      </FieldsProvider>
     </BrowserRouter>
   );
 }

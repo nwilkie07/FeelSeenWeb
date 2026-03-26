@@ -46,8 +46,13 @@ export default function WeatherCard({ fields, entriesMap, onRefresh }: WeatherCa
 
   const handleRefresh = async () => {
     setSyncing(true);
-    await syncWeather(true);
-    setSyncing(false);
+    try {
+      await syncWeather(true);
+    } catch (err) {
+      console.error('Weather sync failed:', err);
+    } finally {
+      setSyncing(false);
+    }
     onRefresh();
   };
 

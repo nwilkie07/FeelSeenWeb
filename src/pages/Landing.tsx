@@ -44,46 +44,15 @@ export default function Landing() {
             lineHeight: '1.5',
           }}
         >
-          Track your symptoms, moods, and health data in one place. Understand your patterns and feel your best.
+          Track your symptoms, moods, and health data all in one place. See the patterns in your data and learn how to feel your best.  No account required to start.
         </p>
-      </div>
-
-      <div
-        style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '20px 24px',
-          marginBottom: '24px',
-          maxWidth: '340px',
-          width: '100%',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-        }}
-      >
-        <h2
-          style={{
-            fontSize: '15px',
-            fontWeight: '600',
-            color: '#333',
-            marginBottom: '12px',
-          }}
-        >
-          What you can track
-        </h2>
-        <ul
-          style={{
-            textAlign: 'left',
-            fontSize: '14px',
-            color: '#666',
-            lineHeight: '1.8',
-            paddingLeft: '20px',
-          }}
-        >
-          <li>Symptoms and how you feel</li>
-          <li>Mood and energy levels</li>
-          <li>Sleep, activity, and habits</li>
-          <li>Weather conditions (Canada)</li>
-          <li>Custom health metrics</li>
-        </ul>
+        <div style={{ marginTop: '12px', display: 'flex', gap: '16px', fontSize: '13px', justifyContent: 'center', alignItems: 'center' }}>
+          <a href="/privacy" style={{ color: '#a5a5df', textDecoration: 'underline' }}>Privacy Policy</a>
+          <span style={{ color: '#ccc' }}>|</span>
+          <a href="/terms" style={{ color: '#a5a5df', textDecoration: 'underline' }}>Terms</a>
+          <span style={{ color: '#ccc' }}>|</span>
+          <a href="/contact" style={{ color: '#a5a5df', textDecoration: 'underline' }}>Contact</a>
+        </div>
       </div>
 
       <button
@@ -97,37 +66,12 @@ export default function Landing() {
           fontSize: '16px',
           fontWeight: '600',
           cursor: 'pointer',
-          marginBottom: '32px',
+          marginBottom: '8px',
           boxShadow: '0 4px 12px rgba(165,165,223,0.4)',
         }}
       >
         Enter App
       </button>
-
-      <div style={{ display: 'flex', gap: '16px', fontSize: '13px', alignItems: 'center' }}>
-        <a
-          href="/privacy"
-          style={{
-            color: '#666',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-          }}
-        >
-          Privacy Policy
-        </a>
-        <span style={{ color: '#ccc' }}>|</span>
-        <a
-          href="/terms"
-          style={{
-            color: '#666',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-          }}
-        >
-          Terms of Service
-        </a>
-      </div>
-
       <p
         style={{
           fontSize: '12px',

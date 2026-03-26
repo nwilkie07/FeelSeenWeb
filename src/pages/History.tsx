@@ -41,8 +41,12 @@ export default function History() {
 
   const handleDelete = async (entry: FieldEntry) => {
     if (!confirm('Delete this entry?')) return;
-    await deleteFieldEntry(entry.id!);
-    setEntries((prev) => prev.filter((e) => e.id !== entry.id));
+    try {
+      await deleteFieldEntry(entry.id!);
+      setEntries((prev) => prev.filter((e) => e.id !== entry.id));
+    } catch (err) {
+      console.error('Failed to delete entry:', err);
+    }
   };
 
   const displayedEntries = entries.slice(0, displayCount);

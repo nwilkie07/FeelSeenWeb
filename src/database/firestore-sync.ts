@@ -39,9 +39,8 @@ import {
   type WriteBatch,
 } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH, isFirebaseConfigured } from './firebase';
-import { db } from './index';
+import { db, toMobileLoggedAt } from './index';
 import type { SymptomField } from '../types';
-import { format } from 'date-fns';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -52,16 +51,7 @@ function getCurrentUserId(): string {
   return user.uid as string;
 }
 
-/** Convert an ISO datetime string to the "YYYY-MM-DD HH:MM:SS" format the
- *  mobile app writes into Firestore (SQLite datetime() format, local time). */
-function toMobileLoggedAt(isoString: string): string {
-  try {
-    const d = new Date(isoString);
-    return format(d, 'yyyy-MM-dd HH:mm:ss');
-  } catch {
-    return isoString;
-  }
-}
+// toMobileLoggedAt is now imported from ./index
 
 /** Convert "YYYY-MM-DD HH:MM:SS" (mobile) back to an ISO string (web). */
 function fromMobileLoggedAt(mobileStr: string): string {
@@ -99,16 +89,13 @@ function fieldToFirestore(field: SymptomField): Record<string, unknown> {
         : JSON.stringify(field.sliderConfig);
   }
 
-  // table_name: derive a stable name from id + name (same pattern as mobile)
+  // table_name: derive a stable name from id + name
+  // Must match the pattern in database/index.ts toTableName() for consistency
   const safeName = field.name
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '_')
-    .slice(0, 30);
-  // Use the field's createdAt timestamp in millis for uniqueness (same as mobile)
-  const tsMillis = field.createdAt
-    ? new Date(field.createdAt).getTime()
-    : Date.now();
-  const tableName = `sf_${safeName}_${tsMillis}`;
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  const tableName = `sf_${safeName}_${field.id}`;
 
   return {
     id: field.id,

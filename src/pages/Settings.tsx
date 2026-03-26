@@ -364,7 +364,7 @@ export default function Settings() {
         <SettingsCard
           icon={<IoRainyOutline size={22} color="#5dade2" />}
           title="Weather Tracking"
-          description={weatherEnabled ? 'Automatic daily weather sync (Canada only)' : 'Disabled'}
+          description={weatherEnabled ? 'Automatic daily weather sync' : 'Disabled'}
         >
           <button
             onClick={() => setShowWeatherModal(true)}
