@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { IoLeafOutline } from 'react-icons/io5';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -18,20 +17,15 @@ export default function Landing() {
       }}
     >
       <div style={{ marginBottom: '32px' }}>
-        <div
+        <img
+          src="/favicon.svg"
+          alt="FeelSeen"
           style={{
             width: '80px',
             height: '80px',
-            borderRadius: '20px',
-            background: '#a5a5df',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             margin: '0 auto 16px',
           }}
-        >
-          <IoLeafOutline size={40} color="white" />
-        </div>
+        />
         <h1
           style={{
             fontSize: '28px',
@@ -110,34 +104,28 @@ export default function Landing() {
         Enter App
       </button>
 
-      <div style={{ display: 'flex', gap: '16px', fontSize: '13px' }}>
-        <button
-          onClick={() => navigate('/privacy')}
+      <div style={{ display: 'flex', gap: '16px', fontSize: '13px', alignItems: 'center' }}>
+        <a
+          href="/privacy"
           style={{
-            background: 'none',
-            border: 'none',
-            color: '#888',
-            cursor: 'pointer',
-            fontSize: '13px',
+            color: '#666',
             textDecoration: 'underline',
+            cursor: 'pointer',
           }}
         >
           Privacy Policy
-        </button>
+        </a>
         <span style={{ color: '#ccc' }}>|</span>
-        <button
-          onClick={() => navigate('/terms')}
+        <a
+          href="/terms"
           style={{
-            background: 'none',
-            border: 'none',
-            color: '#888',
-            cursor: 'pointer',
-            fontSize: '13px',
+            color: '#666',
             textDecoration: 'underline',
+            cursor: 'pointer',
           }}
         >
           Terms of Service
-        </button>
+        </a>
       </div>
 
       <p
