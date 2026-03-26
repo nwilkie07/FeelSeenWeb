@@ -67,29 +67,25 @@ export default function Privacy() {
             <li><strong>Profile information:</strong> Optional profile data you provide (name, email)</li>
           </ul>
 
-          <SubHeading>2.2 Automatically Collected Data</SubHeading>
-          <ul style={listStyle}>
-            <li>Device type, operating system version, and unique device identifiers</li>
-            <li>App interaction patterns, session duration, and feature usage statistics</li>
-            <li>
-              <strong>Health platform data</strong> (if connected): steps, distance, heart rate,
-              resting heart rate, sleep duration and quality, calories burned, blood pressure,
-              blood glucose, oxygen saturation, hydration, and nutrition data
-            </li>
-          </ul>
-
-          <SubHeading>2.3 Data from Connected Services</SubHeading>
+          <SubHeading>2.2 Data from Connected Services</SubHeading>
           <p>
-            When you connect third-party health platforms (Apple Health, Google Health Connect),
-            we receive only the data types you explicitly authorize. We do not access any health
+            When you connect third-party platforms (Open Meteo Weather Data),
+            we receive only the data types you explicitly authorize. We do not access any
             data beyond what you grant permission for.
+          </p>
+
+          <SubHeading>2.3 Google Services for Backup</SubHeading>
+          <p>
+            When you login to Google for backup, we receive your public google account profile and email address to associate with your encrypted backup data.
+            We can also view and administer all your Firebase data and settings
+            We also have access to see, edit, configure, and delete your Google Cloud data to automatically create a Firebase database to backup your encrypted data on your google account.
+            We do not access any other Google account data.
           </p>
         </Section>
 
         <Section title="3. How We Use Your Data">
           <ul style={listStyle}>
             <li><strong>Providing our services:</strong> To display your symptom trends and summary statistics</li>
-            <li><strong>Improving our app:</strong> To understand how users interact with features and identify areas for improvement</li>
             <li><strong>Syncing your data:</strong> To enable optional cloud backup and restore functionality</li>
           </ul>
         </Section>
@@ -145,7 +141,7 @@ export default function Privacy() {
             <li><strong>Deletion:</strong> Delete entire symptom categories or all data through app settings</li>
             <li><strong>Export:</strong> Export your data in CSV or JSON format</li>
             <li><strong>Disable sync:</strong> Turn off cloud backup at any time</li>
-            <li><strong>Revoke permissions:</strong> Disconnect health platform integrations through your device settings</li>
+            <li><strong>Revoke permissions:</strong> Disconnect integrations through your device settings</li>
           </ul>
           <p style={{ marginTop: '10px' }}>To exercise these rights, use the in-app settings.</p>
         </Section>
@@ -169,16 +165,6 @@ export default function Privacy() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <Td>Apple Health</Td>
-                  <Td>Health metrics you authorize</Td>
-                  <Td>Import health data</Td>
-                </tr>
-                <tr style={{ background: '#fafafa' }}>
-                  <Td>Health Connect (Android)</Td>
-                  <Td>All authorized health types</Td>
-                  <Td>Import health data</Td>
-                </tr>
                 <tr>
                   <Td>Firebase Cloud Firestore</Td>
                   <Td>Encrypted backup data</Td>
@@ -226,41 +212,6 @@ export default function Privacy() {
               </a>
             </p>
           </div>
-        </Section>
-
-        <Section title="11. California Resident Rights (CCPA)">
-          <p>If you are a California resident, you have specific rights under the CCPA:</p>
-          <ul style={listStyle}>
-            <li><strong>Right to Know:</strong> Request disclosure of the categories and specific pieces of personal information collected</li>
-            <li><strong>Right to Delete:</strong> Request deletion of personal information</li>
-            <li><strong>Right to Opt-Out:</strong> Opt-out of the sale of personal information (we do not sell your data)</li>
-          </ul>
-          <p style={{ marginTop: '10px' }}>
-            To exercise these rights, contact us at{' '}
-            <a href="mailto:support@feelseen.ca" style={{ color: '#a5a5df' }}>
-              support@feelseen.ca
-            </a>
-            .
-          </p>
-        </Section>
-
-        <Section title="12. GDPR (EU Residents)">
-          <p>If you are located in the European Economic Area (EEA), you have additional rights:</p>
-          <ul style={listStyle}>
-            <li>Right to access your personal data</li>
-            <li>Right to rectification of inaccurate personal data</li>
-            <li>Right to erasure ("right to be forgotten")</li>
-            <li>Right to restriction of processing</li>
-            <li>Right to data portability</li>
-            <li>Right to object to processing</li>
-          </ul>
-          <p style={{ marginTop: '10px' }}>
-            To exercise these rights, contact us at{' '}
-            <a href="mailto:support@feelseen.ca" style={{ color: '#a5a5df' }}>
-              support@feelseen.ca
-            </a>
-            .
-          </p>
         </Section>
       </div>
     </div>

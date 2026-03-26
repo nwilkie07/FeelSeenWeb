@@ -67,7 +67,6 @@ export default function Terms() {
             <li>Log daily health entries and observations</li>
             <li>View trends and insights over time</li>
             <li>Optionally sync data across devices via cloud backup</li>
-            <li>Optionally connect third-party health platforms (Google Fit, Fitbit, Garmin)</li>
             <li>Optionally import daily weather data for correlation</li>
           </ul>
           <p style={{ marginTop: '10px' }}>
@@ -94,7 +93,7 @@ export default function Terms() {
               In a medical emergency, contact your local emergency services immediately
             </li>
             <li>
-              FeelSeen does not review, validate, or interpret the health data you enter
+              FeelSeen does not review, or validate the health data you enter
             </li>
           </ul>
         </Section>
@@ -116,7 +115,7 @@ export default function Terms() {
           <p>
             All health data you enter is stored locally on your device. You are responsible for
             maintaining access to your device and backing up your data. We are not responsible for
-            data loss due to device failure, app uninstallation, or browser data clearing.
+            data loss due to device failure or browser data clearing.
           </p>
 
           <SubHeading>5.2 Cloud Sync (Optional)</SubHeading>
@@ -129,7 +128,7 @@ export default function Terms() {
           <SubHeading>5.3 Data Accuracy</SubHeading>
           <p>
             You are solely responsible for the accuracy and completeness of the health data you
-            enter. FeelSeen does not verify, interpret, or validate your entries.
+            enter. FeelSeen does not verify, or validate your entries.
           </p>
 
           <SubHeading>5.4 Export and Portability</SubHeading>
@@ -143,7 +142,6 @@ export default function Terms() {
           <p>You agree not to:</p>
           <ul style={listStyle}>
             <li>Use FeelSeen for any unlawful purpose</li>
-            <li>Attempt to reverse-engineer, decompile, or extract source code from the App</li>
             <li>Use the App to store or transmit harmful, offensive, or illegal content</li>
             <li>Attempt to gain unauthorised access to any part of the App or its infrastructure</li>
             <li>Interfere with the proper working of the App or its connected services</li>
@@ -188,7 +186,7 @@ export default function Terms() {
         <Section title="8. Intellectual Property">
           <p>
             FeelSeen and its original content, features, and functionality are owned by the
-            developers of FeelSeen. The App is provided for your personal, non-commercial use only.
+            developer of FeelSeen. The App is provided for your personal, non-commercial use only.
           </p>
           <p style={{ marginTop: '10px' }}>
             You retain full ownership of all health data you enter into the App. By using cloud
@@ -251,9 +249,9 @@ export default function Terms() {
 
         <Section title="13. Governing Law">
           <p>
-            These Terms are governed by the laws of Ontario, Canada, without regard to conflict of
+            These Terms are governed by the laws of Canada, without regard to conflict of
             law principles. Any disputes arising from these Terms or your use of FeelSeen shall be
-            subject to the exclusive jurisdiction of the courts of Ontario, Canada.
+            subject to the exclusive jurisdiction of Canada.
           </p>
         </Section>
 
